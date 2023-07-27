@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Image Processing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .uploaded-image {
+      max-width: 500px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Processing</h1>
+    <form id="upload-form" action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+      <input type="file" name="photo" accept="image/*" required>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="result" style="display: all;">
+      <h2>Result</h2>
+      <img id="uploaded-image" class="uploaded-image">
+      <img id="processed-image" class="uploaded-image" style="display: None;">
+    </div>
+  </div>
+  <script>
+    document.getElementById('upload-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var formElement = event.target;
+      var formData = new FormData(formElement);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', formElement.action, true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          document.getElementById('result').style.display = 'block';
+          document.getElementById('uploaded-image').src = URL.createObjectURL(formData.get('photo'));
+          document.getElementById('processed-image').src = xhr.responseText;
+          document.getElementById('processed-image').style.display = 'block';
+        } else {
+          console.log('Image processing failed.');
+        }
+      };
+      xhr.send(formData);
+    });
+  </script>
+</body>
+</html>

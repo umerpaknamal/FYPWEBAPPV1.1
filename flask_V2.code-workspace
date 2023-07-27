@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../CIFAR-10-image-classification/CIFAR-10-image-classification/static"
+		}
+	],
+	"settings": {}
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Waste Classification App</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        #image-preview {
+            width: 512px;
+            height: 384px;
+            border: 1px solid black;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+        #result {
+            width: 300px;
+            margin: 0 auto;
+            margin-bottom: 20px;
+            font-size: x-large;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Waste Image Classification App</h1>
+        <form action="/predict" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" id="image-input" accept="image/*" required>
+            <div id="image-preview"></div>
+            <input type="Submit" value="Predict">
+        </form>
+        <h3>:Model Prediction Result:</h3>
+        <div id="result"></div>
+    </div>
+    <script>
+        var imageInput = document.getElementById('image-input');
+        var imagePreview = document.getElementById('image-preview');
+        var resultDiv = document.getElementById('result');
+
+        imageInput.addEventListener('change', function() {
+            var file = imageInput.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                imagePreview.innerHTML = '<img src="' + e.target.result + '" alt="Image Preview">';
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        function submitForm(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/predict', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    resultDiv.innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send(formData);
+        }
+
+        var form = document.getElementsByTagName('form')[0];
+        form.addEventListener('submit', submitForm);
+    </script>
+</body>
+</html>
